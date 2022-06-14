@@ -1,17 +1,30 @@
-makeCacheMatrix <- function(x = matrix()) {
-  inv <- NULL
-  set <- function(y) {
-    x <<- y
-    inv <<- NULL
+makeCacheMatrix <- function(x = matrix()) 
+  ## This function creates a special "matrix" object that can cache its inverse
+  makeCacheMatrix <- function(x = matrix()) { 
+    ## define the argument with default mode of "matrix"
+    
+  inv <- NULL  ## initialize inv as NULL; will hold value of matrix inverse
+  set <- function(y) { ## define the set function to assign new 
+    x <<- y         ## value of matrix in parent environment
+    inv <<- NULL    ## if there is a new matrix, reset inv to NULL
   }
-  get <- function() x
-  setinverse <- function(inverse) inv <<- inverse
-  getinverse <- function() inv
+  get <- function() x  ## define the get fucntion - returns value of the
+                       ## matrix argument
+  setinverse <- function(inverse) inv <<- inverse ## assigns value of 
+                                           ## inv in parent environment
+  getinverse <- function() inv  ## gets the value of inv where called
   list(set = set, get = get,
-       setinverse = setinverse,
-       getinverse = getinverse)
-}
-cacheinverse <- function(x, ...) {
+       setinverse = setinverse,   ## you need this in order to refer 
+       getinverse = getinverse)   ## to the functions with the $ operator
+  }
+
+##This function computes the inverse of the special "matrix" 
+## returned by makeCacheMatrix above.
+## If the inverse has already been calculated (and the matrix has not changed),
+## then cacheSolve will retrieve the inverse from the cache
+
+
+cacheinverse <- function(x, ...) { ## Return a matrix that is the inverse of 'x'
   inv <- x$getinverse()
   if(!is.null(inv)) {
     message("getting cached data")
@@ -23,6 +36,7 @@ cacheinverse <- function(x, ...) {
   inv
 }
 
+## First example to test my code
 my_cache_matrix <- makeCacheMatrix(matrix(1:4,2,2))
 my_cache_matrix$get()
 
@@ -30,22 +44,12 @@ my_cache_matrix$getinverse()
 cacheinverse(my_cache_matrix)
 my_cache_matrix$getinverse()
 
-##Getting cached data
+
+## Second example to test my code
+
  
 my_cache_matrix$set(matrix(c(2,2,1,4),2,2))
 my_cache_matrix$get()
 my_cache_matrix$getinverse()
 cacheinverse(my_cache_matrix)
 my_cache_matrix$getinverse()
-
-
-
-
-
-
-
-
-
-
-
-
